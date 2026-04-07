@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>School Supplies App</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      margin-bottom: 12px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .primary {
+      background: #4CAF50;
+      color: white;
+    }
+
+    .primary:hover {
+      background: #43a047;
+    }
+
+    .secondary {
+      background: #2196F3;
+      color: white;
+      margin-top: 10px;
+    }
+
+    .secondary:hover {
+      background: #1e88e5;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      background: #f9fafb;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      font-weight: 500;
+    }
+
+    .empty {
+      text-align: center;
+      color: #888;
+      padding: 10px;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="card">
+    <h2>📦 Supply Request</h2>
+
+    <input id="teacher" placeholder="Your name">
+
+    <select id="level">
+      <option value="Toddler">Toddler</option>
+      <option value="Junior">Junior</option>
+      <option value="Senior">Senior</option>
+    </select>
+
+    <select id="itemSelect" onchange="toggleCustomItem()">
+      <option value="">-- Select Item --</option>
+      <option value="Glue sticks">Glue sticks</option>
+      <option value="Paper">Paper</option>
+      <option value="Crayons">Crayons</option>
+      <option value="Scissors">Scissors</option>
+      <option value="Markers">Markers</option>
+      <option value="Other">Other...</option>
+    </select>
+
+    <input id="customItem" placeholder="Type your item" style="display:none;">
+
+    <input id="quantity" type="number" placeholder="Quantity">
+
+    <button class="primary" onclick="addItem()">Add Item</button>
+  </div>
+
+  <div class="card">
+    <h2>🧮 Consolidated List</h2>
+    <button class="secondary" onclick="loadData()">Refresh List</button>
+
+    <ul id="list"></ul>
+  </div>
+
+</div>
+
+<script>
+  const SUPABASE_URL = "https://vypvgqpzodvqwtnyhdjf.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5cHZncXB6b2R2cXd0bnloZGpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1NjQwMDcsImV4cCI6MjA5MTE0MDAwN30.VB8NJA1ZvBA3sAu4nHFyUuEenwwtlHIGUeS4EcobvXo";
+
+  const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  function toggleCustomItem() {
+    const select = document.getElementById("itemSelect").value;
+    const custom = document.getElementById("customItem");
+    custom.style.display = (select === "Other") ? "block" : "none";
+  }
+
+  async function addItem() {
+    const teacher = document.getElementById("teacher").value;
+    const level = document.getElementById("level").value;
+    const selected = document.getElementById("itemSelect").value;
+    const custom = document.getElementById("customItem").value;
+    const quantity = parseInt(document.getElementById("quantity").value);
+
+    const item = selected === "Other" ? custom : selected;
+
+    if (!teacher || !item || !quantity) {
+      alert("Please fill in all fields");
+      return;
+    }
+
+    const { error } = await client.from("requests").insert([
+      {
+        teacher_name: teacher,
+        level: level,
+        item_name: item.trim(),
+        quantity: quantity
+      }
+    ]);
+
+    if (error) {
+      alert("Error: " + error.message);
+      return;
+    }
+
+    alert("Added!");
+
+    document.getElementById("itemSelect").value = "";
+    document.getElementById("customItem").value = "";
+    document.getElementById("customItem").style.display = "none";
+    document.getElementById("quantity").value = "";
+
+    loadData();
+  }
+
+  async function loadData() {
+    const { data, error } = await client.from("requests").select("*");
+
+    if (error) {
+      alert("Error loading data: " + error.message);
+      return;
+    }
+
+    const grouped = {};
+
+    data.forEach(row => {
+      const name = row.item_name.toLowerCase().trim();
+
+      if (!grouped[name]) {
+        grouped[name] = 0;
+      }
+
+      grouped[name] += row.quantity;
+    });
+
+    const list = document.getElementById("list");
+    list.innerHTML = "";
+
+    if (Object.keys(grouped).length === 0) {
+      list.innerHTML = "<div class='empty'>No items yet</div>";
+      return;
+    }
+
+    for (const item in grouped) {
+      const li = document.createElement("li");
+
+      const displayName = item.charAt(0).toUpperCase() + item.slice(1);
+
+      li.innerHTML = `
+        <span>${displayName}</span>
+        <span>${grouped[item]}</span>
+      `;
+
+      list.appendChild(li);
+    }
+  }
+
+  loadData();
+</script>
+
+</body>
+</html>
