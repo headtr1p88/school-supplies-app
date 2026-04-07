@@ -133,6 +133,9 @@
     <button class="secondary" onclick="loadData()">Refresh List</button>
 
     <ul id="list"></ul>
+
+    <h2>📝 Submission Details</h2>
+    <ul id="submissions" style="margin-top:10px;"></ul>
   </div>
 
 </div>
@@ -195,37 +198,39 @@
       return;
     }
 
+    // --- Consolidated List ---
     const grouped = {};
-
     data.forEach(row => {
       const name = row.item_name.toLowerCase().trim();
-
-      if (!grouped[name]) {
-        grouped[name] = 0;
-      }
-
+      if (!grouped[name]) grouped[name] = 0;
       grouped[name] += row.quantity;
     });
 
     const list = document.getElementById("list");
     list.innerHTML = "";
-
     if (Object.keys(grouped).length === 0) {
       list.innerHTML = "<div class='empty'>No items yet</div>";
-      return;
+    } else {
+      for (const item in grouped) {
+        const li = document.createElement("li");
+        const displayName = item.charAt(0).toUpperCase() + item.slice(1);
+        li.innerHTML = `<span>${displayName}</span><span>${grouped[item]}</span>`;
+        list.appendChild(li);
+      }
     }
 
-    for (const item in grouped) {
-      const li = document.createElement("li");
+    // --- Submission Details ---
+    const submissions = document.getElementById("submissions");
+    submissions.innerHTML = "";
 
-      const displayName = item.charAt(0).toUpperCase() + item.slice(1);
-
-      li.innerHTML = `
-        <span>${displayName}</span>
-        <span>${grouped[item]}</span>
-      `;
-
-      list.appendChild(li);
+    if (data.length === 0) {
+      submissions.innerHTML = "<div class='empty'>No submissions yet</div>";
+    } else {
+      data.forEach(row => {
+        const li = document.createElement("li");
+        li.innerHTML = `<span>${row.teacher_name} (${row.level})</span><span>${row.item_name}: ${row.quantity}</span>`;
+        submissions.appendChild(li);
+      });
     }
   }
 
