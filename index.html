@@ -1,71 +1,189 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>School Supplies App</title>
+  <title>School Supplies</title>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
+  <!-- Inter Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
   <style>
-    * { box-sizing: border-box; }
-    body { font-family:-apple-system, BlinkMacSystemFont,"Segoe UI",Roboto; background:#f4f6f8; margin:0; padding:20px; }
-    .container { max-width:500px; margin:auto; }
-
-    .card {
-      background:#ffffff;
-      padding:20px;
-      border-radius:16px;
-      box-shadow:0 4px 12px rgba(0,0,0,0.05);
-      margin-bottom:20px;
-      transition:0.3s;
+    :root {
+      --bg: #f5f7fa;
+      --card: #ffffff;
+      --primary: #4f7cff;
+      --text: #1f2937;
+      --subtext: #6b7280;
+      --border: #e5e7eb;
     }
-    .card:hover { box-shadow:0 6px 16px rgba(0,0,0,0.08); }
 
-    h1,h2 { margin:0; }
-    h2 { display:flex; align-items:center; justify-content:space-between; font-size:18px; }
-    h2.submission-heading { margin-top:25px; } /* extra space before heading */
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      margin: 0;
+      padding: 20px;
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    .header img {
+      width: 36px;
+      height: 36px;
+    }
+
+    .header h1 {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card);
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .submission-heading {
+      margin-top: 35px;
+    }
+
+    /* Inputs */
+    .form-group {
+      margin-bottom: 14px;
+    }
 
     input, select {
-      width:100%;
-      padding:12px;
-      margin:8px 0 12px;
-      border-radius:10px;
-      border:1px solid #ddd;
-      font-size:14px;
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      font-size: 14px;
     }
 
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    /* Buttons */
     button {
-      width:100%;
-      padding:14px;
-      border:none;
-      border-radius:12px;
-      font-size:16px;
-      cursor:pointer;
-      transition:0.2s;
+      width: 100%;
+      padding: 10px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 10px;
     }
 
-    .primary { background:#A3D9C8; color:#2C3E50; }
-    .primary:hover { background:#7CCDB3; }
+    button:hover {
+      background: #3b63d1;
+    }
 
-    .secondary { background:#FFD3B6; color:#2C3E50; margin-top:10px; }
-    .secondary:hover { background:#FFB482; }
+    /* Lists */
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
 
-    ul { list-style:none; padding:0; }
     li {
-      background:#f9fafb;
-      padding:12px;
-      border-radius:10px;
-      margin-bottom:8px;
-      display:flex;
-      justify-content:space-between;
-      font-weight:500;
-      align-items:center;
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
     }
 
-    .empty { text-align:center; color:#888; padding:10px; }
+    li:last-child {
+      border-bottom: none;
+    }
 
-    .refresh-icon { cursor:pointer; font-size:20px; color:#7CCDB3; transition:0.2s; }
-    .refresh-icon:hover { color:#A3D9C8; }
+    .empty {
+      text-align: center;
+      color: var(--subtext);
+      padding: 10px;
+      font-size: 14px;
+    }
 
-    .delete-icon { cursor:pointer; color:red; margin-left:10px; font-weight:bold; }
+    /* Icons */
+    .refresh {
+      cursor: pointer;
+      font-size: 16px;
+      color: var(--subtext);
+      margin-left: auto;
+      padding: 4px;
+      border-radius: 4px;
+      transition: color 0.2s;
+    }
+
+    .refresh:hover {
+      color: var(--primary);
+      background: rgba(79, 124, 255, 0.1);
+    }
+
+    .delete {
+      cursor: pointer;
+      color: #9ca3af;
+      margin-left: 10px;
+    }
+
+    .delete:hover {
+      color: #ef4444;
+    }
+
+    .meta {
+      font-size: 12px;
+      color: var(--subtext);
+      margin-left: 6px;
+    }
+
+    .top-controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      align-items: center;
+    }
+
+    .top-controls select {
+      width: auto;
+      flex: 1;
+    }
+
+    .top-controls button {
+      width: auto;
+      flex: none;
+      padding: 8px 12px;
+    }
   </style>
 </head>
 
@@ -73,52 +191,69 @@
 
 <div class="container">
 
-  <!-- School Header -->
-  <div class="card" style="text-align:center;">
-    <img src="https://img.icons8.com/color/96/school-building.png" alt="School Logo" style="border-radius:50%; margin-bottom:10px;">
+  <!-- Header -->
+  <div class="header">
+    <img src="https://img.icons8.com/fluency/48/school.png">
     <h1>Springfield Elementary</h1>
   </div>
 
-  <!-- Supply Request -->
+  <!-- Form -->
   <div class="card">
-    <h2>📦 Supply Request</h2>
+    <h2>Supply Request</h2>
 
-    <input id="teacher" placeholder="Your name">
+    <div class="form-group">
+      <input id="teacher" placeholder="Teacher name">
+    </div>
 
-    <select id="level">
-      <option value="Toddler">Toddler</option>
-      <option value="Junior">Junior</option>
-      <option value="Senior">Senior</option>
-    </select>
+    <div class="form-group">
+      <select id="level">
+        <option value="Toddler">Toddler</option>
+        <option value="Junior">Junior</option>
+        <option value="Senior">Senior</option>
+      </select>
+    </div>
 
-    <select id="itemSelect" onchange="toggleCustomItem()">
-      <option value="">-- Select Item --</option>
-      <option value="Glue sticks">Glue sticks</option>
-      <option value="Paper">Paper</option>
-      <option value="Crayons">Crayons</option>
-      <option value="Scissors">Scissors</option>
-      <option value="Markers">Markers</option>
-      <option value="Other">Other...</option>
-    </select>
+    <div class="form-group">
+      <select id="itemSelect" onchange="toggleCustomItem()">
+        <option value="">Select item</option>
+        <option>Glue sticks</option>
+        <option>Paper</option>
+        <option>Crayons</option>
+        <option>Scissors</option>
+        <option>Markers</option>
+        <option value="Other">Other...</option>
+      </select>
+    </div>
 
-    <input id="customItem" placeholder="Type your item" style="display:none;">
+    <div class="form-group">
+      <input id="customItem" placeholder="Custom item" style="display:none;">
+    </div>
 
-    <input id="quantity" type="number" placeholder="Quantity">
+    <div class="form-group">
+      <input id="quantity" type="number" placeholder="Quantity">
+    </div>
 
-    <button class="primary" onclick="addItem()">Add Item</button>
+    <button onclick="addItem()">Add Item</button>
   </div>
 
-  <!-- Consolidated List & Submissions -->
+  <!-- Lists -->
   <div class="card">
+
+    <div class="top-controls">
+      <select id="monthSelect"></select>
+      <button onclick="exportCSV()">Export CSV</button>
+    </div>
+
     <h2>
-      🧮 Consolidated List
-      <span class="refresh-icon" onclick="loadData()">🔄</span>
+      Consolidated List
+      <span class="refresh" onclick="loadData()">⟳</span>
     </h2>
 
     <ul id="list"></ul>
 
-    <h2 class="submission-heading">📝 Submission Details</h2>
+    <h2 class="submission-heading">Submission Details</h2>
     <ul id="submissions"></ul>
+
   </div>
 
 </div>
@@ -130,9 +265,14 @@
   const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   function toggleCustomItem() {
-    const select = document.getElementById("itemSelect").value;
-    const custom = document.getElementById("customItem");
-    custom.style.display = (select === "Other") ? "block" : "none";
+    const val = document.getElementById("itemSelect").value;
+    document.getElementById("customItem").style.display =
+      val === "Other" ? "block" : "none";
+  }
+
+  function formatDate(d) {
+    const date = new Date(d);
+    return date.toLocaleDateString();
   }
 
   async function addItem() {
@@ -141,85 +281,224 @@
     const selected = document.getElementById("itemSelect").value;
     const custom = document.getElementById("customItem").value;
     const quantity = parseInt(document.getElementById("quantity").value);
-
     const item = selected === "Other" ? custom : selected;
 
     if (!teacher || !item || !quantity) {
-      alert("Please fill in all fields");
+      alert("Fill all fields");
       return;
     }
 
-    const { error } = await client.from("requests").insert([
-      { teacher_name: teacher, level: level, item_name: item.trim(), quantity: quantity }
-    ]);
+    try {
+      const { data, error } = await client.from("requests").insert([
+        { teacher_name: teacher, level, item_name: item.trim(), quantity }
+      ]);
 
-    if (error) { alert("Error: " + error.message); return; }
+      if (error) {
+        console.error("Insert error:", error);
+        alert("Error adding item: " + error.message);
+        return;
+      }
 
-    document.getElementById("itemSelect").value = "";
-    document.getElementById("customItem").value = "";
-    document.getElementById("customItem").style.display = "none";
-    document.getElementById("quantity").value = "";
+      // Clear form
+      document.getElementById("teacher").value = "";
+      document.getElementById("itemSelect").value = "";
+      document.getElementById("customItem").value = "";
+      document.getElementById("customItem").style.display = "none";
+      document.getElementById("quantity").value = "";
 
+      loadData();
+    } catch (err) {
+      console.error("Exception in addItem:", err);
+      alert("Exception adding item: " + err.message);
+    }
+  }
+
+  async function deleteItem(id) {
+    if (!confirm("Delete item?")) return;
+    await client.from("requests").delete().eq("id", id);
     loadData();
   }
 
-  async function loadData() {
-    const { data, error } = await client.from("requests").select("*");
+  function populateMonthSelector() {
+    const monthSelect = document.getElementById("monthSelect");
+    const now = new Date();
+    const currentYearMonth = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+    
+    console.log("Current year-month (string-based):", currentYearMonth);
 
-    if (error) { alert("Error loading data: " + error.message); return; }
+    // Create months using string manipulation instead of Date objects to avoid timezone issues
+    let year = now.getFullYear();
+    let month = now.getMonth() + 1; // 1-12
 
-    // Consolidated List
-    const grouped = {};
-    data.forEach(row => {
-      const name = row.item_name.toLowerCase().trim();
-      if (!grouped[name]) grouped[name] = 0;
-      grouped[name] += row.quantity;
-    });
+    // Current month + previous 12 months (13 total)
+    for (let i = 0; i < 13; i++) {
+      const monthStr = year + '-' + String(month).padStart(2, '0');
+      const d = new Date(year, month - 1, 1); // Just for display formatting
+      const display = d.toLocaleString('default', { month: 'long', year: 'numeric' });
+      
+      const option = document.createElement("option");
+      option.value = monthStr;
+      option.textContent = display;
+      monthSelect.appendChild(option);
 
-    const list = document.getElementById("list");
-    list.innerHTML = "";
-    if (Object.keys(grouped).length === 0) {
-      list.innerHTML = "<div class='empty'>No items yet</div>";
-    } else {
-      for (const item in grouped) {
-        const li = document.createElement("li");
-        const displayName = item.charAt(0).toUpperCase() + item.slice(1);
-        li.innerHTML = `<span>${displayName}</span><span>${grouped[item]}</span>`;
-        list.appendChild(li);
+      // Decrement month, handle year rollover
+      month--;
+      if (month === 0) {
+        month = 12;
+        year--;
       }
     }
 
-    // Submission Details with Delete
-    const submissions = document.getElementById("submissions");
-    submissions.innerHTML = "";
+    monthSelect.value = currentYearMonth;
+    console.log("Available options:", Array.from(monthSelect.options).map(o => o.value));
+    console.log("Month selector value after setting:", monthSelect.value);
+    monthSelect.onchange = loadData;
+  }
 
-    if (data.length === 0) {
-      submissions.innerHTML = "<div class='empty'>No submissions yet</div>";
-    } else {
-      data.forEach(row => {
+  async function loadData() {
+    const month = document.getElementById("monthSelect").value;
+    console.log("loadData called with month:", month);
+    if (!month) {
+      console.log("No month selected, returning");
+      return;
+    }
+
+    const [year, monthNum] = month.split('-');
+    // Create date range for the selected month
+    const startDate = new Date(Date.UTC(parseInt(year), parseInt(monthNum) - 1, 1));
+    const endDate = new Date(Date.UTC(parseInt(year), parseInt(monthNum), 1));
+
+    const startISO = startDate.toISOString();
+    const endISO = endDate.toISOString();
+
+    console.log("Querying month:", month, "from", startISO, "to", endISO);
+
+    try {
+      const { data, error } = await client.from("requests")
+        .select("*")
+        .gte("created_at", startISO)
+        .lt("created_at", endISO);
+
+      console.log("Query result:", data ? data.length + " items" : "null", error);
+
+      if (error) {
+        console.error("Error loading data:", error);
+        return;
+      }
+
+      // Consolidated
+      const grouped = {};
+      const latestDate = {};
+
+      data.forEach(r => {
+        const name = r.item_name;
+        grouped[name] = (grouped[name] || 0) + r.quantity;
+        latestDate[name] = latestDate[name]
+          ? (new Date(r.created_at) > new Date(latestDate[name]) ? r.created_at : latestDate[name])
+          : r.created_at;
+      });
+
+      const sortedItems = Object.keys(grouped).sort((a,b) => new Date(latestDate[b]) - new Date(latestDate[a]));
+
+      const list = document.getElementById("list");
+      list.innerHTML = sortedItems.length
+        ? sortedItems.map(k =>
+            `<li><span>${k} <span class="meta">Last: ${formatDate(latestDate[k])}</span></span><span>${grouped[k]}</span></li>`
+          ).join("")
+        : "<div class='empty'>No items</div>";
+
+      // Submissions
+      const sub = document.getElementById("submissions");
+      sub.innerHTML = "";
+
+      if (!data.length) {
+        sub.innerHTML = "<div class='empty'>No submissions</div>";
+        return;
+      }
+
+      const sortedData = data.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+
+      sortedData.forEach(row => {
         const li = document.createElement("li");
 
-        const textSpan = document.createElement("span");
-        textSpan.textContent = `${row.teacher_name} (${row.level}) → ${row.item_name}: ${row.quantity}`;
+        const text = document.createElement("span");
+        text.innerHTML = `${row.teacher_name} (${row.level}) — ${row.item_name}: ${row.quantity} <span class="meta">${formatDate(row.created_at)}</span>`;
 
-        const deleteSpan = document.createElement("span");
-        deleteSpan.textContent = "❌";
-        deleteSpan.className = "delete-icon";
-        deleteSpan.addEventListener("click", async () => {
-          if (!confirm("Remove this item?")) return;
-          const { error } = await client.from("requests").delete().eq("id", row.id);
-          if (error) { alert("Error deleting: " + error.message); return; }
-          loadData();
-        });
+        const del = document.createElement("span");
+        del.textContent = "✕";
+        del.className = "delete";
+        del.onclick = () => deleteItem(row.id);
 
-        li.appendChild(textSpan);
-        li.appendChild(deleteSpan);
-        submissions.appendChild(li);
+        li.appendChild(text);
+        li.appendChild(del);
+        sub.appendChild(li);
       });
+    } catch (err) {
+      console.error("Exception in loadData:", err);
     }
   }
 
-  loadData();
+  function exportCSV() {
+    const month = document.getElementById("monthSelect").value;
+    if (!month) return;
+
+    const [year, monthNum] = month.split('-');
+    const startDate = new Date(Date.UTC(parseInt(year), parseInt(monthNum) - 1, 1));
+    const endDate = new Date(Date.UTC(parseInt(year), parseInt(monthNum), 1));
+
+    const startISO = startDate.toISOString();
+    const endISO = endDate.toISOString();
+
+    client.from("requests")
+      .select("*")
+      .gte("created_at", startISO)
+      .lt("created_at", endISO)
+      .then(({ data }) => {
+        if (!data.length) { alert("No data for this month"); return; }
+
+        // Build consolidated list
+        const grouped = {};
+        const latestDate = {};
+
+        data.forEach(r => {
+          const name = r.item_name;
+          grouped[name] = (grouped[name] || 0) + r.quantity;
+          latestDate[name] = latestDate[name]
+            ? (new Date(r.created_at) > new Date(latestDate[name]) ? r.created_at : latestDate[name])
+            : r.created_at;
+        });
+
+        const sortedItems = Object.keys(grouped).sort((a,b) => new Date(latestDate[b]) - new Date(latestDate[a]));
+
+        // Build CSV content
+        let csvContent = "CONSOLIDATED LIST\n";
+        csvContent += "Item,Total Quantity\n";
+        sortedItems.forEach(item => {
+          csvContent += `"${item}",${grouped[item]}\n`;
+        });
+
+        csvContent += "\n\nINDIVIDUAL ORDERS\n";
+        csvContent += "Teacher,Level,Item,Quantity,Date\n";
+        
+        const sortedData = data.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+        sortedData.forEach(r => {
+          csvContent += `"${r.teacher_name}","${r.level}","${r.item_name}",${r.quantity},"${formatDate(r.created_at)}"\n`;
+        });
+
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `school_orders_${month}.csv`;
+        a.click();
+      });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    populateMonthSelector();
+    loadData();
+  });
+
 </script>
 
 </body>
