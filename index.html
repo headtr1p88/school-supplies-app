@@ -202,7 +202,17 @@
     <h2>Supply Request</h2>
 
     <div class="form-group">
-      <input id="teacher" placeholder="Teacher name">
+      <select id="teacher">
+        <option value="">Select teacher</option>
+        <option>John Smith</option>
+        <option>Sarah Johnson</option>
+        <option>Michael Brown</option>
+        <option>Emily Davis</option>
+        <option>David Wilson</option>
+        <option>Lisa Anderson</option>
+        <option>James Martinez</option>
+        <option>Jennifer Taylor</option>
+      </select>
     </div>
 
     <div class="form-group">
@@ -245,13 +255,13 @@
     </div>
 
     <h2>
-      Consolidated List
+      Order Summary
       <span class="refresh" onclick="loadData()">⟳</span>
     </h2>
 
     <ul id="list"></ul>
 
-    <h2 class="submission-heading">Submission Details</h2>
+    <h2 class="submission-heading">Order Details</h2>
     <ul id="submissions"></ul>
 
   </div>
@@ -272,7 +282,10 @@
 
   function formatDate(d) {
     const date = new Date(d);
-    return date.toLocaleDateString();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}/${month}/${day}`;
   }
 
   async function addItem() {
@@ -446,6 +459,8 @@
     const startDate = new Date(Date.UTC(parseInt(year), parseInt(monthNum) - 1, 1));
     const endDate = new Date(Date.UTC(parseInt(year), parseInt(monthNum), 1));
 
+    const monthName = startDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+
     const startISO = startDate.toISOString();
     const endISO = endDate.toISOString();
 
@@ -471,13 +486,13 @@
         const sortedItems = Object.keys(grouped).sort((a,b) => new Date(latestDate[b]) - new Date(latestDate[a]));
 
         // Build CSV content
-        let csvContent = "CONSOLIDATED LIST\n";
+        let csvContent = `CONSOLIDATED LIST - ${monthName}\n`;
         csvContent += "Item,Total Quantity\n";
         sortedItems.forEach(item => {
           csvContent += `"${item}",${grouped[item]}\n`;
         });
 
-        csvContent += "\n\nINDIVIDUAL ORDERS\n";
+        csvContent += `\n\nINDIVIDUAL ORDERS - ${monthName}\n`;
         csvContent += "Teacher,Level,Item,Quantity,Date\n";
         
         const sortedData = data.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
