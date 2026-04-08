@@ -486,13 +486,13 @@
         const sortedItems = Object.keys(grouped).sort((a,b) => new Date(latestDate[b]) - new Date(latestDate[a]));
 
         // Build CSV content
-        let csvContent = `CONSOLIDATED LIST - ${monthName}\n`;
+        let csvContent = `ORDER SUMMARY - ${monthName}\n`;
         csvContent += "Item,Total Quantity\n";
         sortedItems.forEach(item => {
           csvContent += `"${item}",${grouped[item]}\n`;
         });
 
-        csvContent += `\n\nINDIVIDUAL ORDERS - ${monthName}\n`;
+        csvContent += `\n\nORDER DETAILS - ${monthName}\n`;
         csvContent += "Teacher,Level,Item,Quantity,Date\n";
         
         const sortedData = data.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
