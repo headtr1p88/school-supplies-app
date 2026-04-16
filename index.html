@@ -411,7 +411,10 @@
           : r.created_at;
       });
 
-      const sortedItems = Object.keys(grouped).sort((a,b) => new Date(latestDate[b]) - new Date(latestDate[a]));
+      const sortedItems = Object.keys(grouped).sort((a, b) => {
+        if (grouped[b] !== grouped[a]) return grouped[b] - grouped[a];
+        return new Date(latestDate[b]) - new Date(latestDate[a]);
+      });
 
       const list = document.getElementById("list");
       list.innerHTML = sortedItems.length
@@ -483,7 +486,10 @@
             : r.created_at;
         });
 
-        const sortedItems = Object.keys(grouped).sort((a,b) => new Date(latestDate[b]) - new Date(latestDate[a]));
+        const sortedItems = Object.keys(grouped).sort((a, b) => {
+          if (grouped[b] !== grouped[a]) return grouped[b] - grouped[a];
+          return new Date(latestDate[b]) - new Date(latestDate[a]);
+        });
 
         // Build CSV content
         let csvContent = `ORDER SUMMARY - ${monthName}\n`;
